@@ -1,6 +1,9 @@
 const buttonAdd = document.querySelector('.button_add')
 const inputTask = document.querySelector('.input_task')
 const divAllTask = document.querySelector('.divAllTasks')
+const allButton = document.querySelector('.buttonAll')
+const completedButton = document.querySelector('.buttonCompleted')
+const uncompletedButton = document.querySelector('.buttonUncompleted')
 
 let tasks = [
     {
@@ -10,10 +13,14 @@ let tasks = [
     },
     {
         name: 'Помыть полы',
-        isChecked: false,
+        isChecked: true,
         id: crypto.randomUUID(),
     }
 ]
+
+allButton.addEventListener('click', buttonAllFunc)
+completedButton.addEventListener('click', buttonCompletedFunc)
+uncompletedButton.addEventListener('click', buttonUncompletedFunc)
 
 buttonAdd.addEventListener('click', addTask)
 
@@ -37,6 +44,10 @@ function render(tasks) {
         let checkbox = document.createElement('input')
         checkbox.type = 'checkbox'
         checkbox.classList.add('checkbox')
+        checkbox.checked = tasks[i].isChecked
+        checkbox.dataset.id = tasks[i].id
+
+        checkbox.addEventListener('click', checkboxFunc)
 
         let delButton = document.createElement('button')
         delButton.innerHTML = 'Удалить'
@@ -108,6 +119,35 @@ function editFunc(e) {
 
     }
     
+}
+
+function checkboxFunc(e) {
+    checkbox = e.currentTarget
+    idCheckbox = checkbox.dataset.id
+    tasks = tasks.map(task => {
+        if(task.id == idCheckbox) {
+            return {
+                ...task, 
+                isChecked: !task.isChecked 
+            }
+        }
+        else {
+            return task
+        }
+    })
+    render(tasks)
+}
+
+function buttonAllFunc() {
+    render(tasks)
+}
+
+function buttonCompletedFunc() {   
+    render(tasks.filter(task => task.isChecked == true))
+}
+
+function buttonUncompletedFunc() {
+    render(tasks.filter(task => task.isChecked == false))
 }
 
 render(tasks)
