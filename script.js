@@ -24,6 +24,10 @@ uncompletedButton.addEventListener('click', buttonUncompletedFunc)
 
 buttonAdd.addEventListener('click', addTask)
 
+divAllTask.addEventListener('click', checkboxFunc)
+divAllTask.addEventListener('click', deleteFunc)
+divAllTask.addEventListener('click', editFunc)
+
 function render(tasks) {  
     divAllTask.innerHTML = ''
     for(let i = 0; i<tasks.length; i++) {
@@ -47,37 +51,24 @@ function render(tasks) {
         checkbox.checked = tasks[i].isChecked
         checkbox.dataset.id = tasks[i].id
 
-        checkbox.addEventListener('click', checkboxFunc)
-
         let delButton = document.createElement('button')
         delButton.innerHTML = 'Удалить'
         delButton.classList.add('deleteButton')
         delButton.dataset.id = tasks[i].id
 
-        delButton.addEventListener('click', (e) => {
-            deleteFunc(e)
-        })
-
         let editButton = document.createElement('button')
         editButton.innerHTML = 'Изменить'
         editButton.classList.add('editButton')
-        editButton.addEventListener('click', editButton)
-
-        editButton.addEventListener('click', (e) => {
-            editFunc(e)
-        })
-
-
-        divAllTask.append(divTask)
 
         divCheckName.append(checkbox)
         divCheckName.append(nameTask)
         divButtons.append(delButton)
         divButtons.append(editButton)
-
+        
         divTask.append(divCheckName)
         divTask.append(divButtons)
         
+        divAllTask.append(divTask)
     }
 
 }
@@ -85,57 +76,63 @@ function render(tasks) {
 function addTask() {
     let nameTask = inputTask.value
     inputTask.value = ''
-    tasks.push({
-        name: nameTask,
-        isChecked: false,
-        id: crypto.randomUUID(),
-    })
+    tasks = [
+        ...tasks,
+        {
+            name: nameTask,
+            isChecked: false,
+            id: crypto.randomUUID(),
+        }
+    ]
     render(tasks)
 }
 
 function deleteFunc(e) {
     let btn = e.currentTarget
     let idBtn = btn.dataset.id
-    console.log(idBtn)
-    tasks = tasks.filter(task => task.id != idBtn)
-    render(tasks)
-
+    if(btn.classList.contains('deleteButton')) {
+        tasks = tasks.filter(task => task.id != idBtn)
+        render(tasks)
+    }
 }
 
 function editFunc(e) {
     let btn = e.currentTarget
     let textBtn = btn.parentNode.parentNode.firstElementChild.lastElementChild
     const inputBtn = document.createElement('input')
-    const newp = document.createElement('spam')
-    if(btn.innerHTML == 'Изменить') {
-        inputBtn.value = textBtn.textContent
-        textBtn.replaceWith(inputBtn)
-        btn.innerHTML = 'Сохранить'
-    }
-    else {
-        newp.innerHTML = textBtn.value
-        textBtn.replaceWith(newp)
-        btn.innerHTML = 'Изменить'
+    const title = document.createElement('p')
+    if(btn.classList.contains('editButton')) {
+        if(btn.innerHTML === 'Изменить') {
+            inputBtn.value = textBtn.textContent
+            textBtn.replaceWith(inputBtn)
+            btn.innerHTML = 'Сохранить'
+        }
+        else {
+            title.innerHTML = textBtn.value
+            textBtn.replaceWith(title)
+            btn.innerHTML = 'Изменить'
 
+        }
     }
-    
 }
 
 function checkboxFunc(e) {
     checkbox = e.currentTarget
     idCheckbox = checkbox.dataset.id
-    tasks = tasks.map(task => {
-        if(task.id == idCheckbox) {
-            return {
-                ...task, 
-                isChecked: !task.isChecked 
+    if(checkbox.classList.contains('checkbox')) {
+        tasks = tasks.map(task => {
+            if(task.id === idCheckbox) {
+                return {
+                    ...task, 
+                    isChecked: !task.isChecked 
+                }
             }
-        }
-        else {
-            return task
-        }
-    })
-    render(tasks)
+            else {
+                return task
+            }
+        })
+        render(tasks)
+    }
 }
 
 function buttonAllFunc() {
@@ -143,11 +140,11 @@ function buttonAllFunc() {
 }
 
 function buttonCompletedFunc() {   
-    render(tasks.filter(task => task.isChecked == true))
+    render(tasks.filter(task => task.isChecked === true))
 }
 
 function buttonUncompletedFunc() {
-    render(tasks.filter(task => task.isChecked == false))
+    render(tasks.filter(task => task.isChecked === false))
 }
 
 render(tasks)
