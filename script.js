@@ -1,9 +1,7 @@
-const buttonAdd = document.querySelector('.button_add')
-const inputTask = document.querySelector('.input_task')
-const divAllTask = document.querySelector('.divAllTasks')
-const allButton = document.querySelector('.buttonAll')
-const completedButton = document.querySelector('.buttonCompleted')
-const uncompletedButton = document.querySelector('.buttonUncompleted')
+const buttonAdd = document.querySelector('.add-btn')
+const inputTask = document.querySelector('.task-input')
+const divAllTask = document.querySelector('.tasks')
+const buttonsFilters = document.querySelectorAll('.filter-btn')
 
 let tasks = [
     {
@@ -18,30 +16,28 @@ let tasks = [
     }
 ]
 
-allButton.addEventListener('click', buttonAllFunc)
-completedButton.addEventListener('click', buttonCompletedFunc)
-uncompletedButton.addEventListener('click', buttonUncompletedFunc)
+console.log(buttonsFilters)
+for(let i = 0; i<buttonsFilters.length; i++) {
+    buttonsFilters[i].addEventListener('click', buttonsFIlterFunc)
+}
 
 buttonAdd.addEventListener('click', addTask)
 
-divAllTask.addEventListener('click', checkboxFunc)
-divAllTask.addEventListener('click', deleteFunc)
-divAllTask.addEventListener('click', editFunc)
 
 function render(tasks) {  
     divAllTask.innerHTML = ''
     for(let i = 0; i<tasks.length; i++) {
 
         let divTask = document.createElement('div')
-        divTask.classList.add('divTask')
+        divTask.classList.add('task')
 
-        let divCheckName = document.createElement('div')
-        divCheckName.classList.add('divCheckName')
+        let divCheckName = document.createElement('label')
+        divCheckName.classList.add('task-content')
 
         let divButtons = document.createElement('div')
-        divButtons.classList.add('divButtons')
+        divButtons.classList.add('task-actions')
 
-        let nameTask = document.createElement('p')
+        let nameTask = document.createElement('span')
         nameTask.innerHTML = tasks[i].name
         nameTask.classList.add('nameTask')
 
@@ -51,24 +47,34 @@ function render(tasks) {
         checkbox.checked = tasks[i].isChecked
         checkbox.dataset.id = tasks[i].id
 
+        if(checkbox.checked) {
+            divTask.classList.add('completed')
+        }
+
         let delButton = document.createElement('button')
-        delButton.innerHTML = 'Удалить'
-        delButton.classList.add('deleteButton')
+        delButton.innerHTML = '🗑️'
+        delButton.classList.add('delete-btn')
         delButton.dataset.id = tasks[i].id
 
         let editButton = document.createElement('button')
-        editButton.innerHTML = 'Изменить'
-        editButton.classList.add('editButton')
+        editButton.innerHTML = '✏️'
+        editButton.classList.add('edit-btn')
 
         divCheckName.append(checkbox)
         divCheckName.append(nameTask)
-        divButtons.append(delButton)
         divButtons.append(editButton)
+        divButtons.append(delButton)
         
         divTask.append(divCheckName)
         divTask.append(divButtons)
         
         divAllTask.append(divTask)
+
+
+        checkbox.addEventListener('click', checkboxFunc)
+        delButton.addEventListener('click', deleteFunc)
+        editButton.addEventListener('click', editFunc)
+
     }
 
 }
@@ -90,61 +96,90 @@ function addTask() {
 function deleteFunc(e) {
     let btn = e.currentTarget
     let idBtn = btn.dataset.id
-    if(btn.classList.contains('deleteButton')) {
-        tasks = tasks.filter(task => task.id != idBtn)
-        render(tasks)
-    }
+    tasks = tasks.filter(task => task.id != idBtn)
+    render(tasks)
 }
 
 function editFunc(e) {
     let btn = e.currentTarget
     let textBtn = btn.parentNode.parentNode.firstElementChild.lastElementChild
     const inputBtn = document.createElement('input')
-    const title = document.createElement('p')
-    if(btn.classList.contains('editButton')) {
-        if(btn.innerHTML === 'Изменить') {
-            inputBtn.value = textBtn.textContent
-            textBtn.replaceWith(inputBtn)
-            btn.innerHTML = 'Сохранить'
-        }
-        else {
-            title.innerHTML = textBtn.value
-            textBtn.replaceWith(title)
-            btn.innerHTML = 'Изменить'
+    const title = document.createElement('span')
+    if(btn.innerHTML === '✏️') {
+        inputBtn.value = textBtn.textContent
+        textBtn.replaceWith(inputBtn)
+        btn.innerHTML = '💾'
+    }
+    else {
+        title.innerHTML = textBtn.value
+        textBtn.replaceWith(title)
+        btn.innerHTML = '✏️'
 
-        }
     }
 }
+
 
 function checkboxFunc(e) {
     checkbox = e.currentTarget
     idCheckbox = checkbox.dataset.id
-    if(checkbox.classList.contains('checkbox')) {
-        tasks = tasks.map(task => {
-            if(task.id === idCheckbox) {
-                return {
-                    ...task, 
-                    isChecked: !task.isChecked 
-                }
+    tasks = tasks.map(task => {
+        if(task.id === idCheckbox) {
+            return {
+                ...task, 
+                isChecked: !task.isChecked 
             }
-            else {
-                return task
-            }
-        })
-        render(tasks)
-    }
-}
-
-function buttonAllFunc() {
+        }
+        else {
+            return task
+        }
+    })
     render(tasks)
 }
 
-function buttonCompletedFunc() {   
-    render(tasks.filter(task => task.isChecked === true))
-}
+// function buttonAllFunc() {
+//     allButton.classList.add('active')
+//     completedButton.classList.remove('active')
+//     uncompletedButton.classList.remove('active')
+//     render(tasks)
+// }
 
-function buttonUncompletedFunc() {
-    render(tasks.filter(task => task.isChecked === false))
+// function buttonCompletedFunc() {   
+//     allButton.classList.remove('active')
+//     completedButton.classList.add('active')
+//     uncompletedButton.classList.remove('active')
+//     render(tasks.filter(task => task.isChecked === true))
+// }
+
+// function buttonUncompletedFunc() {
+//     allButton.classList.remove('active')
+//     completedButton.classList.remove('active')
+//     uncompletedButton.classList.add('active')
+//     render(tasks.filter(task => task.isChecked === false))
+// }
+
+function buttonsFIlterFunc(e) {
+    let btn = e.currentTarget
+    console.log(btn.innerHTML)
+    buttonsFilters.forEach((button) => {
+            if(button.innerHTML == btn.innerHTML) {
+                button.classList.add('active')
+            }
+            else {
+                button.classList.remove('active')
+            }
+        })
+    if(btn.innerHTML == 'Все') {
+        console.log(tasks, 'все')
+        render(tasks)
+    }
+    if(btn.innerHTML == 'Выполненные') {
+        console.log(tasks, 'выполненные')
+        render(tasks.filter(task => task.isChecked === true))
+    }
+    if(btn.innerHTML == 'Активные') {
+        console.log(tasks, 'невыполненные')
+        render(tasks.filter(task => task.isChecked === false))
+    }
 }
 
 render(tasks)
