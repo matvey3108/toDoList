@@ -4,21 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Document</title>
+    <title>My toDolist</title>
 </head>
 <body>
-    <div class="inputDiv_task">
-        <input class="input_task" type="">
-        <button class="button_add">+</button>
+    <div class="todo-app">
+    <h1>Todo List</h1>
+
+    <div class="todo-input">
+        <input
+            type="text"
+            class="task-input"
+            placeholder="Добавить задачу..."
+        />
+        <button class="add-btn">+</button>
     </div>
-    <div class="divFilter">
-        <button class="buttonAll">Все</button>
-        <button class="buttonCompleted">Выполненые</button>
-        <button class="buttonUncompleted">Невыполненые</button>
+
+    <div class="filters">
+        <button class="filter-btn active" data-filter="all">
+            Все
+        </button>
+
+        <button class="filter-btn" data-filter="completed">
+            Выполненные
+        </button>
+
+        <button class="filter-btn" data-filter="active">
+            Активные
+        </button>
     </div>
-    <div class="divAllTasks">
-        
+
+    <div class="tasks">
+
+        <div class="task">
+            <label class="task-content">
+                <input type="checkbox">
+                <span>Изучить React Hooks</span>
+            </label>
+
+            <div class="task-actions">
+                <button class="edit-btn">✏️</button>
+                <button class="delete-btn">🗑️</button>
+            </div>
+        </div>
+
+        <div class="task completed">
+            <label class="task-content">
+                <input type="checkbox" checked>
+                <span>Сделать тренировку</span>
+            </label>
+
+            <div class="task-actions">
+                <button class="edit-btn">✏️</button>
+                <button class="delete-btn">🗑️</button>
+            </div>
+        </div>
+
     </div>
+</div>
 </body>
-<script src="script.js"></script>
 </html>
