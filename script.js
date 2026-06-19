@@ -81,16 +81,28 @@ function render(tasks) {
 
 function addTask() {
     let nameTask = inputTask.value
-    inputTask.value = ''
-    tasks = [
-        ...tasks,
-        {
-            name: nameTask,
-            isChecked: false,
-            id: crypto.randomUUID(),
-        }
-    ]
-    render(tasks)
+    if(nameTask !== '') {
+        inputTask.value = ''
+        tasks = [
+            ...tasks,
+            {
+                name: nameTask,
+                isChecked: false,
+                id: crypto.randomUUID(),
+            }
+        ]
+        render(tasks)
+        buttonsFilters.forEach((button) => {
+                if('Все' === button.innerHTML) {
+                    button.classList.add('active')
+                }
+                else {
+                    button.classList.remove('active')
+                }
+    })
+    }
+    
+
 }
 
 function deleteFunc(e) {
@@ -136,47 +148,27 @@ function checkboxFunc(e) {
     render(tasks)
 }
 
-// function buttonAllFunc() {
-//     allButton.classList.add('active')
-//     completedButton.classList.remove('active')
-//     uncompletedButton.classList.remove('active')
-//     render(tasks)
-// }
-
-// function buttonCompletedFunc() {   
-//     allButton.classList.remove('active')
-//     completedButton.classList.add('active')
-//     uncompletedButton.classList.remove('active')
-//     render(tasks.filter(task => task.isChecked === true))
-// }
-
-// function buttonUncompletedFunc() {
-//     allButton.classList.remove('active')
-//     completedButton.classList.remove('active')
-//     uncompletedButton.classList.add('active')
-//     render(tasks.filter(task => task.isChecked === false))
-// }
 
 function buttonsFIlterFunc(e) {
     let btn = e.currentTarget
     console.log(btn.innerHTML)
     buttonsFilters.forEach((button) => {
-            if(button.innerHTML == btn.innerHTML) {
+            if(button.innerHTML === btn.innerHTML) {
                 button.classList.add('active')
             }
             else {
                 button.classList.remove('active')
             }
         })
-    if(btn.innerHTML == 'Все') {
+    if(btn.innerHTML === 'Все') {
         console.log(tasks, 'все')
         render(tasks)
     }
-    if(btn.innerHTML == 'Выполненные') {
+    if(btn.innerHTML === 'Выполненные') {
         console.log(tasks, 'выполненные')
         render(tasks.filter(task => task.isChecked === true))
     }
-    if(btn.innerHTML == 'Активные') {
+    if(btn.innerHTML === 'Активные') {
         console.log(tasks, 'невыполненные')
         render(tasks.filter(task => task.isChecked === false))
     }
