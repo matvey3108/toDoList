@@ -16,9 +16,10 @@ let tasks = [
     }
 ]
 
-console.log(buttonsFilters)
+
 for(let i = 0; i<buttonsFilters.length; i++) {
     buttonsFilters[i].addEventListener('click', buttonsFIlterFunc)
+    buttonsFilters[i].dataset.id = i
 }
 
 buttonAdd.addEventListener('click', addTask)
@@ -93,10 +94,9 @@ function addTask() {
         ]
         render(tasks)
         buttonsFilters.forEach((button) => {
-                if('Все' === button.innerHTML) {
+                if(button.classList.contains('all')) {
                     button.classList.add('active')
-                }
-                else {
+                } else {
                     button.classList.remove('active')
                 }
     })
@@ -151,25 +151,21 @@ function checkboxFunc(e) {
 
 function buttonsFIlterFunc(e) {
     let btn = e.currentTarget
-    console.log(btn.innerHTML)
     buttonsFilters.forEach((button) => {
-            if(button.innerHTML === btn.innerHTML) {
+            if(button.dataset.id === btn.dataset.id) {
                 button.classList.add('active')
             }
             else {
                 button.classList.remove('active')
             }
         })
-    if(btn.innerHTML === 'Все') {
-        console.log(tasks, 'все')
+    if(btn.classList.contains('all')) {
         render(tasks)
     }
-    if(btn.innerHTML === 'Выполненные') {
-        console.log(tasks, 'выполненные')
+    if(btn.classList.contains('completed')) {
         render(tasks.filter(task => task.isChecked === true))
     }
-    if(btn.innerHTML === 'Активные') {
-        console.log(tasks, 'невыполненные')
+    if(btn.classList.contains('uncompleted')) {
         render(tasks.filter(task => task.isChecked === false))
     }
 }
