@@ -17,10 +17,8 @@ let tasks = [
 ]
 
 
-for(let i = 0; i<buttonsFilters.length; i++) {
-    buttonsFilters[i].addEventListener('click', buttonsFIlterFunc)
-    buttonsFilters[i].dataset.id = i
-}
+buttonsFilters.forEach(btn => btn.addEventListener('click', buttonsFilterFunc))
+
 
 buttonAdd.addEventListener('click', addTask)
 
@@ -149,10 +147,10 @@ function checkboxFunc(e) {
 }
 
 
-function buttonsFIlterFunc(e) {
+function buttonsFilterFunc(e) {
     let btn = e.currentTarget
     buttonsFilters.forEach((button) => {
-            if(button.dataset.id === btn.dataset.id) {
+            if(button.classList[1] === btn.classList[1]) {
                 button.classList.add('active')
             }
             else {
