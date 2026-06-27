@@ -4,21 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Document</title>
+    <title>My toDolist</title>
 </head>
 <body>
-    <div class="inputDiv_task">
-        <input class="input_task" type="">
-        <button class="button_add">+</button>
+    <div class="todo-app">
+    <h1>Todo List</h1>
+
+    <div class="todo-input">
+        <input
+            type="text"
+            class="task-input"
+            placeholder="Добавить задачу..."
+        />
+        <button class="add-btn">+</button>
     </div>
-    <div class="divFilter">
-        <button class="buttonAll">Все</button>
-        <button class="buttonCompleted">Выполненые</button>
-        <button class="buttonUncompleted">Невыполненые</button>
+
+    <div class="filters">
+        <button class="filter-btn active all" data-filter="all">Все</button>
+
+        <button class="filter-btn completed" data-filter="completed">Выполненные</button>
+
+        <button class="filter-btn uncompleted" data-filter="active">Активные</button>
     </div>
-    <div class="divAllTasks">
+
+    <div class="tasks">
         
     </div>
-</body>
+</div>
+
 <script src="script.js"></script>
+
+</body>
+
 </html>
