@@ -2,6 +2,8 @@ const buttonAdd = document.querySelector('.add-btn')
 const inputTask = document.querySelector('.task-input')
 const divAllTask = document.querySelector('.tasks')
 const buttonsFilters = document.querySelectorAll('.filter-btn')
+const counter = document.querySelector('.counter-span')
+
 
 let tasks = [
     {
@@ -17,14 +19,21 @@ let tasks = [
 ]
 
 
+
 buttonsFilters.forEach(btn => btn.addEventListener('click', buttonsFilterFunc))
 
-
+inputTask.addEventListener('keydown', function(event) {
+    if(event.key === 'Enter') {
+        event.preventDefault();
+        addTask()
+    }
+})
 buttonAdd.addEventListener('click', addTask)
 
 
 function render(tasks) {  
     divAllTask.innerHTML = ''
+    counter.innerHTML = `Кол-во задач: ${tasks.length}`
     for(let i = 0; i<tasks.length; i++) {
 
         let divTask = document.createElement('div')
@@ -79,6 +88,7 @@ function render(tasks) {
 }
 
 function addTask() {
+    
     let nameTask = inputTask.value
     if(nameTask !== '') {
         inputTask.value = ''
