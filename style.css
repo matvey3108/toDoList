@@ -131,7 +131,7 @@ body {
     justify-content: center;
     gap: 12px;
 
-    margin-bottom: 28px;
+    margin-bottom: 15px;
 }
 
 .filters button {
@@ -151,6 +151,7 @@ body {
     cursor: pointer;
 
     transition: 0.25s;
+    
 }
 
 .filters button:hover {
@@ -162,6 +163,16 @@ body {
 
     box-shadow:
         0 8px 20px rgba(20, 184, 166, 0.3);
+}
+
+/* =================
+    COUNTER
+================= */
+
+.counter {
+    text-align: right;
+    color: #ffffff;
+    margin-bottom: 15px;
 }
 
 /* ========================
