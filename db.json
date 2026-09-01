@@ -1,0 +1,25 @@
+{
+  "tasks": [
+    {
+      "name": "sadsa",
+      "isChecked": true,
+      "id": "UKMiWYcv_Ng"
+    },
+    {
+      "name": "asdsad",
+      "isChecked": true,
+      "id": "i71UPUn5HWQ"
+    },
+    {
+      "name": "asdasadasd",
+      "isChecked": false,
+      "id": "QOh5CYjX95o"
+    },
+    {
+      "name": "saasd",
+      "isChecked": false,
+      "id": "OKC9FTEd64g"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

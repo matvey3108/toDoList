@@ -1,3 +1,5 @@
+// json-server --watch db.json --port 3000
+
 const buttonAdd = document.querySelector('.add-btn')
 const inputTask = document.querySelector('.task-input')
 const divAllTask = document.querySelector('.tasks')
@@ -5,25 +7,29 @@ const buttonsFilters = document.querySelectorAll('.filter-btn')
 const counter = document.querySelector('.counter-span')
 
 
-let tasks = [
-    {
-        name: 'Помыть посуду',
-        isChecked: false,
-        id: crypto.randomUUID(),
-    },
-    {
-        name: 'Помыть полы',
-        isChecked: true,
-        id: crypto.randomUUID(),
+let array = []
+
+async function tasksGetter() {
+    divAllTask.innerHTML = 'Загрузка Задач'
+    try {
+        let promise = await fetch('http://localhost:3000/tasks')
+        let tasks = await promise.json()
+        array = tasks
+        render(tasks)
     }
-]
+    catch (err) {
+        console.log(err, 'err')
+    }
+    finally {
+    }
+}
 
-
+tasksGetter()
 
 buttonsFilters.forEach(btn => btn.addEventListener('click', buttonsFilterFunc))
 
-inputTask.addEventListener('keydown', function(event) {
-    if(event.key === 'Enter') {
+inputTask.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
         event.preventDefault();
         addTask()
     }
@@ -31,10 +37,11 @@ inputTask.addEventListener('keydown', function(event) {
 buttonAdd.addEventListener('click', addTask)
 
 
-function render(tasks) {  
+function render(tasks) {
+    console.log(tasks)
     divAllTask.innerHTML = ''
     counter.innerHTML = `Кол-во задач: ${tasks.length}`
-    for(let i = 0; i<tasks.length; i++) {
+    for (let i = 0; i < tasks.length; i++) {
 
         let divTask = document.createElement('div')
         divTask.classList.add('task')
@@ -55,7 +62,7 @@ function render(tasks) {
         checkbox.checked = tasks[i].isChecked
         checkbox.dataset.id = tasks[i].id
 
-        if(checkbox.checked) {
+        if (checkbox.checked) {
             divTask.classList.add('completed')
         }
 
@@ -67,15 +74,16 @@ function render(tasks) {
         let editButton = document.createElement('button')
         editButton.innerHTML = '✏️'
         editButton.classList.add('edit-btn')
+        editButton.dataset.id = tasks[i].id
 
         divCheckName.append(checkbox)
         divCheckName.append(nameTask)
         divButtons.append(editButton)
         divButtons.append(delButton)
-        
+
         divTask.append(divCheckName)
         divTask.append(divButtons)
-        
+
         divAllTask.append(divTask)
 
 
@@ -87,95 +95,112 @@ function render(tasks) {
 
 }
 
-function addTask() {
+async function addTask() {
+    if(inputTask.value != '') {
+        try {
+            const response = await fetch('http://localhost:3000/tasks', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name: inputTask.value, isChecked: false, id: crypto.randomUUID() })
+            })
+            const result = await response.json()
+            console.log(result)
+        } catch(error) {
+            alert(error)
+        }
+    } else {
+        inputTask.placeholder = 'Node String'
+        inputTask.classList.add('task-content-alert')
+    }
     
-    let nameTask = inputTask.value
-    if(nameTask !== '') {
-        inputTask.value = ''
-        tasks = [
-            ...tasks,
-            {
-                name: nameTask,
-                isChecked: false,
-                id: crypto.randomUUID(),
-            }
-        ]
-        render(tasks)
-        buttonsFilters.forEach((button) => {
-                if(button.classList.contains('all')) {
-                    button.classList.add('active')
-                } else {
-                    button.classList.remove('active')
+    
+}
+
+async function deleteFunc(e) {
+    try {
+        let event = e.currentTarget
+        const response = await fetch(`http://localhost:3000/tasks/${event.dataset.id}`, {
+            method: 'DELETE',
+        });
+        
+        if(!response.ok) {
+            throw new Error(`Сервер вернул ошибку ${response.status}`)
+        }
+    } catch (error) {
+        alert(error)
+    }
+    
+}
+
+async function editFunc(e) {
+        let btn = e.currentTarget
+        let changeElem = btn.parentNode.parentNode.firstElementChild.lastElementChild
+        const inputBtn = document.createElement('input')
+        const title = document.createElement('span')
+        inputBtn.classList.add('edit-input')
+        if (btn.innerHTML === '✏️') {
+            inputBtn.value = changeElem.textContent
+            changeElem.replaceWith(inputBtn)
+            btn.innerHTML = '💾'
+            console.log(inputBtn.value)
+        } else {
+            if(changeElem.value != '') {
+                try {
+                    console.log(changeElem)
+                    const response = await fetch(`http://localhost:3000/tasks/${btn.dataset.id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({name: changeElem.value})
+                    })
+                } catch(error) {
+                    alert(error)
                 }
-    })
+            } else {
+                changeElem.placeholder = 'Node String'
+                changeElem.classList.add('task-content-alert')
+            }      
+        }
+}
+
+async function checkboxFunc(e) {
+    try {
+        let checkbox = e.currentTarget 
+        console.log(checkbox.checked)
+        const response = await fetch(`http://localhost:3000/tasks/${checkbox.dataset.id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({isChecked: checkbox.checked})
+        })
+    } catch(error) {
+        alert(error)
     }
     
-
 }
-
-function deleteFunc(e) {
-    let btn = e.currentTarget
-    let idBtn = btn.dataset.id
-    tasks = tasks.filter(task => task.id != idBtn)
-    render(tasks)
-}
-
-function editFunc(e) {
-    let btn = e.currentTarget
-    let textBtn = btn.parentNode.parentNode.firstElementChild.lastElementChild
-    const inputBtn = document.createElement('input')
-    const title = document.createElement('span')
-    if(btn.innerHTML === '✏️') {
-        inputBtn.value = textBtn.textContent
-        textBtn.replaceWith(inputBtn)
-        btn.innerHTML = '💾'
-    }
-    else {
-        title.innerHTML = textBtn.value
-        textBtn.replaceWith(title)
-        btn.innerHTML = '✏️'
-
-    }
-}
-
-
-function checkboxFunc(e) {
-    checkbox = e.currentTarget
-    idCheckbox = checkbox.dataset.id
-    tasks = tasks.map(task => {
-        if(task.id === idCheckbox) {
-            return {
-                ...task, 
-                isChecked: !task.isChecked 
-            }
-        }
-        else {
-            return task
-        }
-    })
-    render(tasks)
-}
-
 
 function buttonsFilterFunc(e) {
     let btn = e.currentTarget
     buttonsFilters.forEach((button) => {
-            if(button.classList[1] === btn.classList[1]) {
-                button.classList.add('active')
-            }
-            else {
-                button.classList.remove('active')
-            }
-        })
-    if(btn.classList.contains('all')) {
-        render(tasks)
+        if (button.classList[1] === btn.classList[1]) {
+            button.classList.add('active')
+        }
+        else {
+            button.classList.remove('active')
+        }
+    })
+    if (btn.classList.contains('all')) {
+        render(array)
     }
-    if(btn.classList.contains('completed')) {
-        render(tasks.filter(task => task.isChecked === true))
+    if (btn.classList.contains('completed')) {
+        render(array.filter(task => task.isChecked === true))
     }
-    if(btn.classList.contains('uncompleted')) {
-        render(tasks.filter(task => task.isChecked === false))
+    if (btn.classList.contains('uncompleted')) {
+        render(array.filter(task => task.isChecked === false))
     }
 }
 
-render(tasks)

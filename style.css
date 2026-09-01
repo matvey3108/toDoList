@@ -85,15 +85,28 @@ body {
     transition: 0.25s;
 }
 
-.todo-input input::placeholder {
+.task-input::placeholder {
     color: rgba(255, 255, 255, 0.5);
-}
+} 
 
 .todo-input input:focus {
     border-color: #14b8a6;
 
     box-shadow:
         0 0 0 3px rgba(20, 184, 166, 0.15);
+}
+
+.edit-input {
+    flex: 0.75;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    font-size: 16px;
+    outline: none;
+    transition: 0.25s;
 }
 
 .todo-input button {
@@ -232,6 +245,14 @@ body {
     font-size: 16px;
 
     flex: 1;
+}
+
+.task-content-alert {
+    --placeholder-color: #ef4444;
+}
+
+.task-content-alert::placeholder {
+  color: #ef4444;
 }
 
 .task-content input[type="checkbox"] {
